@@ -7,6 +7,11 @@ class ServicesService {
   constructor(repository = new ServiceRepository()) {
     this.repository = repository;
   }
+  
+  async getAll() {
+    return await this.repository.getAll();
+  }
+
   // Devuelve la lista de servicios. 
   // Regla de negocio: si llega un filtro por categoría, se aplica acá el controller solo pasa lo que vino en la query string, no filtra nada).
   async getServices(filtro = {}) {

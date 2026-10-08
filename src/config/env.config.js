@@ -1,20 +1,13 @@
-// Etapa 3: configuración centralizada usando variables de entorno.
-
-// dotenv es la única dependencia externa de este proyecto. Su trabajo es
-// leer el archivo ".env" que está en la raíz del proyecto y carga
-// cada línea "CLAVE=valor" dentro de process.env.
+// dotenv es la única dependencia externa de este proyecto. 
+// Lee el archivo ".env" que está en la raíz del proyecto y carga cada línea "CLAVE=valor" dentro de process.env.
 
 import "dotenv/config";
 
-// Lista de variables de entorno que la app necesita sí o sí parafuncionar. 
+// Lista de variables de entorno que la app necesita sí o sí para funcionar. 
 // Si en el futuro agregamos una nueva variable obligatoria, alcanza con sumarla acá.
-const variablesRequeridas = ["PORT", "NODE_ENV", "MONGODB_URI"];
-//"MONGO_URI"
+const variablesRequeridas = ["PORT", "NODE_ENV", "MONGO_URI"];
 
-// Patrón "fail-fast": en vez de dejar que la app arranque a medias y explote más tarde con un error confuso 
-// (por ejemplo, al intentar conectarse a una base de datos con una URL undefined), 
-// chequeamos ACÁ, apenas arranca el proceso, que estén todas las
-// variables necesarias. 
+// Chequeamos ACÁ, apenas arranca el proceso, que estén todas las variables necesarias. 
 // Si falta alguna, avisamos con un mensaje claro y cortamos la ejecución inmediatamente.
 const variablesFaltantes = variablesRequeridas.filter(
   (nombre) => !process.env[nombre],
@@ -39,5 +32,5 @@ if (variablesFaltantes.length > 0) {
 export const config = {
   port: Number(process.env.PORT),
   nodeEnv: process.env.NODE_ENV,
-  mongoUri: process.env.MONGODB_URI,
+  mongoUri: process.env.MONGO_URI,
 };

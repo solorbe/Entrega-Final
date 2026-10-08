@@ -29,7 +29,10 @@ class BookingsService {
     this.bookingRepository = bookingRepository;
     this.serviceRepository = serviceRepository;
   }
-
+  
+  async getAll() {
+    return await this.bookingRepository.getAll();
+  }
 // Devuelve la reserva con ese id. Si no existe, AppError 404.
   async getBookingById(id) {
     const booking = await this.bookingRepository.getById(id);
@@ -106,4 +109,4 @@ class BookingsService {
 }
 
 // Instancia única compartida por todos los que importen este módulo.
-export const bookingsService = new BookingsService();
+export const bookingsService = new BookingsService()  // 👈 exportás la instancia

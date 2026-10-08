@@ -1,21 +1,39 @@
+// import { Router } from 'express';
+// import { ServiceRepository } from '../repositories/services.repository.js';
+// import {BookingRepository} from '../repositories/bookings.repository.js';
+// const serviceRepository = new ServiceRepository();
+// const bookingRepository = new BookingRepository();
+
 import { Router } from 'express';
-import { ServiceRepository } from '../repositories/services.repository.js';
-import {BookingRepository} from '../repositories/bookings.repository.js';
-const serviceRepository = new ServiceRepository();
-const bookingRepository = new BookingRepository();
+import { servicesService } from '../services/services.service.js';
+import { bookingsService } from '../services/bookings.service.js';
+const serviceService = servicesService;
+const bookingService = bookingsService;
+
+
 const router = Router();
 router.get('/services', async (req, res) => {
-  const services = await serviceRepository.getAll();
-  res.render('services', {services});
+  try {
+    const services = await serviceService.getAll();
+    res.render('services', { services });
+  } catch (error) {
+    res.status(500).render('error', { message: error.message });
+  }
 });
+
 router.get('/bookings', async (req, res) => {
-  const bookings = await bookingRepository.getAll();
-  res.render('bookings', {bookings});
+  try {
+    const bookings = await bookingService.getAll();
+    res.render('bookings', { bookings });
+  } catch (error) {
+    res.status(500).render('error', { message: error.message });
+  }
 });
 
 
-router.get('/messages', async (req, res) => {
-  res.render('socket');
-});
+
+// router.get('/messages', async (req, res) => {
+//   res.render('socket');
+// });
 
 export default router;

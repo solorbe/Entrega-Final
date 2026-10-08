@@ -199,7 +199,7 @@ test/
 
 ## Smoke tests
 
-Para validar las operaciones contra MondoDB, se puede ejecutar el siguiente comando
+Para validar las operaciones contra MongoDB, se puede ejecutar el siguiente comando
 
 ```bash
 npm test
