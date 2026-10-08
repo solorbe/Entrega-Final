@@ -30,6 +30,7 @@ class BookingsService {
     this.serviceRepository = serviceRepository;
   }
   
+  
   async getAll() {
     return await this.bookingRepository.getAll();
   }

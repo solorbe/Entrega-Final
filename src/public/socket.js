@@ -1,20 +1,3 @@
-// const socket = io();
-
-
-// const input = document.getElementById('textoEntrada');
-// const log = document.getElementById('log');
-
-// // Emito mensaje al servidor cuando el usuario presiona Enter en el input
-// input.addEventListener('keyup', evt => {
-
-//     if (evt.key === "Enter") {
-//         console.log(`Enviando mensaje: ${input.value}`);
-//         socket.emit('message2', input.value);
-//         input.value = ""
-//     }
-// });
-
-
 
 const socket = io();
 

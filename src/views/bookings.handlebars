@@ -1,14 +1,22 @@
 <h1>Reservas</h1>
-{{#each bookings}}
-  <article>
-    <h1>Reserva de {{this.clientName}}</h1>
-    <p>Email: {{this.clientEmail}}</p>
-    <p>Fecha: {{this.date}}</p>
-    <p>Hora: {{this.time}}</p>
-    <p>Estado: {{this.status}}</p>
-    {{#each this.services}}
-      <p>Servicio: {{this.service}}</p>
-      <p>Cantidad: {{this.quantity}}</p>
-    {{/each}}
-  </article>
-{{/each}}
+
+<div id="bookings-container">
+  {{#each bookings}}
+    <article id="booking-{{this._id}}">
+      <h2>Reserva de {{this.clientName}}</h2>
+      <p>Email: {{this.clientEmail}}</p>
+      <p>Fecha: {{this.date}}</p>
+      <p>Hora: {{this.time}}</p>
+      <p class="booking-status">Estado: {{this.status}}</p>
+      {{#each this.services}}
+        <p>Servicio: {{this.service}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
+      {{/each}}
+    </article>
+  {{/each}}
+</div>
+
+<!-- Scripts al final del archivo -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/booking.js"></script>
+

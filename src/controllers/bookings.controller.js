@@ -5,9 +5,19 @@ import { bookingsService } from '../services/bookings.service.js';
 export const createBooking = async (req, res) => {
   try {
     const newBooking = await bookingsService.createBooking(req.body);
-
     // 201 Created: se creó un recurso nuevo. Nace con services: [].
-    res.status(201).json({ status: 'success', payload: newBooking });
+    //res.status(201).json({ status: 'success', payload: newBooking });
+    // Avisamos a los clientes conectados mediante Socket.IO
+    const io = req.app.get('io');
+
+    io.emit('BookingCreated', newBooking);
+
+    // ÚNICA respuesta HTTP
+    return res.status(201).json({
+      status: 'success',
+      payload: newBooking
+    });
+
   } catch (error) {
     res.status(error.statusCode ?? 500).json({ status: 'error', message: error.message });
   }

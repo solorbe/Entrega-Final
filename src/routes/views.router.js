@@ -1,9 +1,3 @@
-// import { Router } from 'express';
-// import { ServiceRepository } from '../repositories/services.repository.js';
-// import {BookingRepository} from '../repositories/bookings.repository.js';
-// const serviceRepository = new ServiceRepository();
-// const bookingRepository = new BookingRepository();
-
 import { Router } from 'express';
 import { servicesService } from '../services/services.service.js';
 import { bookingsService } from '../services/bookings.service.js';
