@@ -204,3 +204,8 @@ Para validar las operaciones contra MongoDB, se puede ejecutar el siguiente coma
 ```bash
 npm test
 ```
+
+## Eventos en tiempo real con Socket.IO
+
+bookings.handlebars y services.handlebars se suscriben a los eventos `BookingCreated` y `ServiceCreated` respectivamente, para actualizar la lista de reservas o servicios en tiempo real sin recargar la página.
+Las vistas public/js/booking.js y public/js/service.js para escuchar los eventos y actualizar el DOM.

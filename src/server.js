@@ -36,20 +36,9 @@ startServer();
 const io = new Server(httpServer);
 
 app.set('io', io);
-// const logs = []; 
-// io.on('connection', (socket) => {
-
-// socket.on("message2", data => {
-//     console.log(`Mensaje recibido: ${data} de ${socket.id}`)
-//     logs.push({ socketid: socket.id, message: data })
-//     io.emit("log", { logs })
-// })
-
 io.on('connection', (socket) => {
     console.log('Cliente conectado:', socket.id);
     socket.on('disconnect', () => {
         console.log('Cliente desconectado:', socket.id);
     });
 });
-
-

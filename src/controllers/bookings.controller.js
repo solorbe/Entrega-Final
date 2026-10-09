@@ -10,7 +10,7 @@ export const createBooking = async (req, res) => {
     // Avisamos a los clientes conectados mediante Socket.IO
     const io = req.app.get('io');
 
-    io.emit('BookingCreated', newBooking);
+    io.emit('bookingCreated', newBooking);
 
     // ÚNICA respuesta HTTP
     return res.status(201).json({
