@@ -26,12 +26,14 @@ export class BookingMongoDao {
   }
 
   async update(id, data) {
+    
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return null;
     }
     // { new: true } hace que findByIdAndUpdate devuelva el documento ya
     // actualizado, en vez del que había antes del update.
     // { runValidators: true } hace que Mongoose valide el documento
+    // antes de guardarlo, según las reglas del schema.
     return BookingModel.findByIdAndUpdate(id, data, {returnDocument: 'after', runValidators: true })
   }
 

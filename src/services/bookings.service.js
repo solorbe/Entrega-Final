@@ -62,9 +62,8 @@ class BookingsService {
 
   // Agrega el servicio :sid a la reserva :bid.
   async addServiceToBooking(bid, sid) {
-    // 1) Regla de negocio: no se puede agregar un servicio que no
+    // 1) Regla de negocio: no se puede agregar un servicio que no 
     //    existe. Se lo preguntamos al serviceRepository.
-    console.log('BookingsService.addServiceToBooking: bid=', bid, 'sid=', sid);
     const servicio = await this.serviceRepository.getById(sid);
     if (!servicio) {
       throw new AppError('Servicio no encontrado', 404);
@@ -86,9 +85,10 @@ class BookingsService {
     //    Si el servicio YA está en la reserva, incrementamos su quantity en vez de hacer un segundo push del mismo id: así la
     //    lista tiene una entrada por servicio + un contador, más fácil de leer y de mostrar que varias entradas repetidas.
     //    s.service ahora es un ObjectId de Mongo (no un number), así que comparamos convirtiendo ambos lados a string.
-    
-    const item = booking.services.find((s) => String(s.service) === String(sid));
-    console.log('BookingsService.addServiceToBooking: item =', item);
+
+    const item = booking.services.find((s) => {
+      return String(s.service._id) === String(sid);
+    });
     if (item) {
       item.quantity += 1;
     } else {

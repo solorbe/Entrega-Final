@@ -1,13 +1,3 @@
-// const socket = io();
-// // Verificar si el cliente se conecta exitosamente
-// socket.on('connect', () => {
-//   console.log('✅ Socket conectado con ID:', socket.id);
-// });
-// // Capturar errores de conexión
-// socket.on('connect_error', (err) => {
-//   console.error('❌ Error de conexión en Socket.IO:', err.message);
-// });
-
 const socket = io();
 const bookingsContainer = document.getElementById('bookings-container');
 

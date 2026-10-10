@@ -10,13 +10,20 @@ export const createBooking = async (req, res) => {
     // Avisamos a los clientes conectados mediante Socket.IO
     const io = req.app.get('io');
 
-    io.emit('bookingCreated', newBooking);
+   //io.emit('bookingCreated', newBooking);
+    io.emit('systemLog', {
+    type: 'booking',
+    message: `Se creó una nueva reserva ${newBooking.clientName}`,
+    date: new Date()
+    });
 
     // ÚNICA respuesta HTTP
     return res.status(201).json({
       status: 'success',
       payload: newBooking
     });
+
+    
 
   } catch (error) {
     res.status(error.statusCode ?? 500).json({ status: 'error', message: error.message });
@@ -40,7 +47,22 @@ export const addServiceToBooking = async (req, res) => {
   try {
     const { bid, sid } = req.params;
     const updatedBooking = await bookingsService.addServiceToBooking(bid, sid);
-    res.status(200).json({ status: 'success', payload: updatedBooking });
+
+      const io = req.app.get('io');
+
+   //io.emit('bookingCreated', newBooking);
+    io.emit('systemLog', {
+    type: 'servicioReserva',
+    message: `Se agregó un servicio a la reserva ${updatedBooking.clientName}`,
+    date: new Date()
+    });
+
+    // ÚNICA respuesta HTTP
+    return res.status(201).json({
+      status: 'success',
+      payload: updatedBooking
+    });
+    //res.status(200).json({ status: 'success', payload: updatedBooking });
   } catch (error) {
     res.status(error.statusCode ?? 500).json({ status: 'error', message: error.message });
   }

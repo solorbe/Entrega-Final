@@ -25,9 +25,8 @@ router.get('/bookings', async (req, res) => {
 });
 
 
-
 router.get('/messages', async (req, res) => {
-  res.render('socket');
+  res.render('messages');
 });
 
 export default router;

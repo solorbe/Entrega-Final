@@ -76,8 +76,12 @@ export const createService = async (req, res) => {
     // Avisamos a los clientes conectados mediante Socket.IO
     const io = req.app.get('io');
 
-    io.emit('serviceCreated', newService);
-
+    //io.emit('serviceCreated', newService);
+    io.emit('systemLog', {
+    type: 'service',
+    message: `Se creó el servicio ${newService.name}`,
+    date: new Date()
+});
     // ÚNICA respuesta HTTP
     return res.status(201).json({
       status: 'success',

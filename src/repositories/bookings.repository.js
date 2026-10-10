@@ -14,7 +14,7 @@ export class BookingRepository {
   async getById(id) {
     return this.dao.getById(id);
   }
-
+cl
   async create(data) {
     return this.dao.create(data);
   }
