@@ -1,29 +1,45 @@
 <h1>Reservas</h1>
-
-<div id="bookings-container">
+<div id="bookings-container" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
   {{#each bookings}}
-    <article id="booking-{{this._id}}">
-      <div class="card" style="width: 18rem;">
-        <div class="card-header">
-          Reserva: {{this.clientName}}
+    <div class="col">
+      <article id="booking-{{this._id}}" class="h-100">
+        <div class="card h-100">
+          <div class="card-header">
+            Reserva: {{this.clientName}}
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Email: {{this.clientEmail}}
+            </li>
+            <li class="list-group-item">
+              Fecha: {{formatDate this.date}}
+            </li>
+            <li class="list-group-item">
+              Hora: {{this.time}}
+            </li>
+            <li class="list-group-item">
+              Estado: {{this.status}}
+            </li>
+            <li class="list-group-item">
+              Servicios:
+              <ul class="list-group list-group-flush">
+                {{#each this.services}}
+                  <li class="list-group-item">
+                    {{this.service}}
+                  </li>
+                    <li class="list-group-item">
+                    Cantidad: {{this.quantity}}
+                  </li>
+                {{/each}}
+              </ul>
+            </li>
+          </ul>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">Email: {{this.clientEmail}}</li>
-          {{!-- <li class="list-group-item">Fecha: {{this.date}}</li> --}}
-          <li class="list-group-item">Fecha: {{formatDate this.date}}</li>
-          <li class="list-group-item">Hora: {{this.time}}</li>
-          <li class="list-group-item">Estado: {{this.status}}</li>
-          <li class="list-group-item">Servicios:
-            <ul>
-              {{#each this.services}}
-                <li class="list-group-item">{{this.service}} - Cantidad: {{this.quantity}}</li>
-              {{/each}}
-            </ul>
-          </li>
-        </ul>
-    </article>
+      </article>
+    </div>
   {{/each}}
 </div>
+
 
 <!-- Scripts al final del archivo -->
 <script src="/socket.io/socket.io.js"></script>

@@ -38,14 +38,18 @@ socket.on('bookingCreated', (booking) => {
     .join('');
 
   // Creamos el article
-  const article = document.createElement('article');
 
+  const col = document.createElement('div');
+  col.className = 'col';
+
+  const article = document.createElement('article');
   article.id = `booking-${booking._id}`;
+  article.className = 'h-100';
+  
 
   // Misma estructura que Handlebars
   article.innerHTML = `
-    <div class="card" style="width: 18rem;">
-
+    <div class="card h-100" >
       <div class="card-header">
         Reserva: ${booking.clientName}
       </div>
@@ -71,6 +75,6 @@ socket.on('bookingCreated', (booking) => {
       </ul>
     </div>
   `;
-
-  bookingsContainer.appendChild(article);
+  col.appendChild(article);
+  bookingsContainer.appendChild(col);
 });
