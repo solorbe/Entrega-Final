@@ -8,21 +8,65 @@ socket.on('serviceCreated', (service) => {
     mensaje.textContent = `¡Se creó un nuevo servicio: ${service.name}!`;
   }
   // 2. Insertar la nueva tarjeta en el DOM sin recargar
+  // if (servicesContainer) {
+  //   const article = document.createElement('article');
+  //   article.id = `service-${service._id}`;
+  //   article.innerHTML = `
+  //     <h2>Servicio: ${service.name}</h2>
+  //     <p>Descripción: ${service.description || ''}</p>
+  //     <p>Duración: ${service.duration} minutos</p>
+  //     <p>Precio: $${service.price}</p>
+  //     <p>Categoría: ${service.category || ''}</p>
+  //   `;
+  //   servicesContainer.appendChild(article);
+  // }
+
   if (servicesContainer) {
+    // Creamos la columna de Bootstrap
+    const col = document.createElement('div');
+    col.className = 'col';
+
+    // Creamos el article
     const article = document.createElement('article');
     article.id = `service-${service._id}`;
+    article.className = 'h-100';
+
+    // Generamos la misma card que en Handlebars
     article.innerHTML = `
-      <h2>Servicio: ${service.name}</h2>
-      <p>Descripción: ${service.description || ''}</p>
-      <p>Duración: ${service.duration} minutos</p>
-      <p>Precio: $${service.price}</p>
-      <p>Categoría: ${service.category || ''}</p>
+      <div class="card h-100">
+
+        <div class="card-header">
+          Servicio: ${service.name}
+        </div>
+
+        <ul class="list-group list-group-flush">
+
+          <li class="list-group-item">
+            Descripción: ${service.description || ''}
+          </li>
+
+          <li class="list-group-item">
+            Duración: ${service.duration} minutos
+          </li>
+
+          <li class="list-group-item">
+            Precio: $${service.price}
+          </li>
+
+          <li class="list-group-item">
+            Categoría: ${service.category || ''}
+          </li>
+
+        </ul>
+
+      </div>
     `;
-    servicesContainer.appendChild(article);
+
+    // Insertamos el article dentro de la columna
+    col.appendChild(article);
+
+    // Agregamos la columna al contenedor
+    servicesContainer.appendChild(col);
   }
 });
-// Escuchar servicio eliminado y quitarlo del DOM
-// socket.on('serviceDeleted', (serviceId) => {
-//   const item = document.getElementById(`service-${serviceId}`);
-//   if (item) item.remove();
-// });
+

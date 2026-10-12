@@ -1,8 +1,34 @@
 
 <h1>Servicios disponibles</h1>
 
-<div id="services-container">
+<div id="services-container" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+  {{!-- Iterar sobre los servicios y mostrarlos --}}
   {{#each services}}
+    <div class="col">
+      <article id="service-{{this._id}}" class="h-100">
+        <div class="card h-100">
+          <div class="card-header">
+            Servicio: {{this.name}}
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Descripción: {{this.description}}
+            </li>
+            <li class="list-group-item">
+              Duración: {{this.duration}} minutos
+            </li>
+            <li class="list-group-item">
+              Precio: ${{this.price}}
+            </li>
+            <li class="list-group-item">
+              Categoría: {{this.category}}
+            </li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  {{/each}}
+  {{!-- {{#each services}}
     <article id="service-{{this._id}}">
       <h2>Servicio: {{this.name}}</h2>
       <p>Descripción: {{this.description}}</p>
@@ -10,7 +36,7 @@
       <p>Precio: ${{this.price}}</p>
       <p>Categoría: {{this.category}}</p>
     </article>
-  {{/each}}
+  {{/each}} --}}
 </div>
 
 <!-- Scripts al final del archivo -->
