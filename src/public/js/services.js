@@ -1,16 +1,3 @@
-
-// const socket = io();
-
-// socket.on('serviceCreated', (service) => {
-//   console.log('✅ serviceCreated recibido:', service);
-//   alert('✅ Servicio recibido: ' + service.name);
-// });
-
-// socket.on('connect_error', (err) => {
-//   console.error('❌ Error de conexión socket:', err);
-// });
-
-
 const socket = io();
 const servicesContainer = document.getElementById('services-container');
 const mensaje = document.getElementById('mensaje');

@@ -3,15 +3,24 @@
 <div id="bookings-container">
   {{#each bookings}}
     <article id="booking-{{this._id}}">
-      <h2>Reserva de {{this.clientName}}</h2>
-      <p>Email: {{this.clientEmail}}</p>
-      <p>Fecha: {{this.date}}</p>
-      <p>Hora: {{this.time}}</p>
-      <p class="booking-status">Estado: {{this.status}}</p>
-      {{#each this.services}}
-        <p>Servicio: {{this.service}}</p>
-        <p>Cantidad: {{this.quantity}}</p>
-      {{/each}}
+      <div class="card" style="width: 18rem;">
+        <div class="card-header">
+          Reserva: {{this.clientName}}
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Email: {{this.clientEmail}}</li>
+          {{!-- <li class="list-group-item">Fecha: {{this.date}}</li> --}}
+          <li class="list-group-item">Fecha: {{formatDate this.date}}</li>
+          <li class="list-group-item">Hora: {{this.time}}</li>
+          <li class="list-group-item">Estado: {{this.status}}</li>
+          <li class="list-group-item">Servicios:
+            <ul>
+              {{#each this.services}}
+                <li class="list-group-item">{{this.service}} - Cantidad: {{this.quantity}}</li>
+              {{/each}}
+            </ul>
+          </li>
+        </ul>
     </article>
   {{/each}}
 </div>

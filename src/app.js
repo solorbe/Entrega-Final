@@ -29,7 +29,22 @@ app.use((req, res, next) => {
 
 app.use('/api/services', servicesRouter);
 app.use('/api/bookings', bookingsRouter);
-app.engine('handlebars', engine());
+app.engine('handlebars', engine(
+{
+  helpers: {
+    formatDate: (date) => {
+      if (!date) return 'Sin fecha';
+      const fecha = new Date(date);
+      if (isNaN(fecha.getTime())) return 'Fecha inválida';
+      return fecha.toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+  }
+}
+));
 app.set('view engine', 'handlebars');
 app.set('views', './src/views');
 app.use('/', viewsRouter);

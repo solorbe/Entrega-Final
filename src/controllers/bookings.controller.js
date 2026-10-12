@@ -10,7 +10,7 @@ export const createBooking = async (req, res) => {
     // Avisamos a los clientes conectados mediante Socket.IO
     const io = req.app.get('io');
 
-   //io.emit('bookingCreated', newBooking);
+    io.emit('bookingCreated', newBooking);
     io.emit('systemLog', {
     type: 'booking',
     message: `Se creó una nueva reserva ${newBooking.clientName}`,
@@ -48,9 +48,9 @@ export const addServiceToBooking = async (req, res) => {
     const { bid, sid } = req.params;
     const updatedBooking = await bookingsService.addServiceToBooking(bid, sid);
 
-      const io = req.app.get('io');
+    const io = req.app.get('io');
 
-   //io.emit('bookingCreated', newBooking);
+    //io.emit('bookingCreated', newBooking);
     io.emit('systemLog', {
     type: 'servicioReserva',
     message: `Se agregó un servicio a la reserva ${updatedBooking.clientName}`,
