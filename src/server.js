@@ -1,17 +1,4 @@
 //pone en marcha el servidor físico para que escuche las peticiones en un puerto.
-//node server.js
-//     ↓
-// server.js
-//     ↓
-// importa app.js
-//     ↓
-// app.js configura Express
-//     ↓
-// vuelve a server.js
-//     ↓
-// app.listen()
-//     ↓
-// servidor iniciado
 
 import dotenv from "dotenv";
 import app from "./app.js";
@@ -34,7 +21,6 @@ const startServer = async () => {
 startServer();
 
 const io = new Server(httpServer);
-
 app.set('io', io);
 io.on('connection', (socket) => {
     console.log('Cliente conectado:', socket.id);

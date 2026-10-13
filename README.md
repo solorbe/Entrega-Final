@@ -46,7 +46,7 @@ Cliente -> Ruta -> Controller -> Service -> Repository -> DAO -> MongoDB
 
 ## Cómo probar con Postman
 
-Con el servidor corriendo (por defecto en `http://localhost:8080`, salvo que haya cambiado `PORT` en tu `.env`):
+Con el servidor corriendo (por defecto en `http://localhost:8080`, salvo que haya cambiado `PORT` en `.env`):
 
 | Método | URL | Body (raw JSON) | Respuesta esperada |
 |---|---|---|---|
@@ -70,7 +70,7 @@ También están disponibles `GET /` (estado del servidor)
 Ahora los datos viven en **MongoDB Atlas** en dos colecciones: `services` y `bookings`.
 Se pueden very editar a mano desde la pestaña **Collections** del cluster en Atlas.
 
-Los archivos `src/data/services.json` y `src/data/bookings.json` quedan en el repo como referencia histórica.
+Los archivos `src/dao/mongo/services.mongo.dao.js` y `src/dao/mongo/booking.mongo.dao.js` usan los **models** de Mongoose (`ServiceModel` y `BookingModel`) para leer y escribir en esas colecciones.
 
 ## Consultas avanzadas, validación y populate
 
@@ -119,17 +119,18 @@ Si el body no cumple el schema de Zod, se responde `400` **sin llegar al control
 Zod **no convierte tipos**: `"price": "8000"` (string) es inválido;
 tiene que ser `8000` (número). Los services quedan solo con las reglas de negocio (por ejemplo, precio no negativo).
 
-## Populate
+## Reporte de reservas con datos completos de servicios usando populate
 
-En la base, cada reserva sigue guardando solo `{ service: <ObjectId>,
-quantity }`
+En la base, cada reserva sigue guardando solo `{ service: <ObjectId>, quantity }`
 Al leerla, el DAO hace `.populate('services.service')` y Mongoose reemplaza cada `ObjectId` por el documento completo del
-servicio (algo parecido a un `JOIN` de SQL).
+servicio.
 
 Cómo probar la API con Postman
+`http://localhost:8082/api/services?page=3&limit=10` se puede consultar la lista de servicios paginada, filtrada y ordenada según los parámetros de la query string.
 
-Cada recurso trae un `_id` de MongoDB (un `ObjectId`).
-Con el servidor corriendo http://localhost:8082/api/bookings/report/status
+## Reporte de reservas por estado
+
+Con el servidor corriendo `http://localhost:8080/api/bookings/report/status` salvo que haya cambiado `PORT` en `.env`se puede consultar la cantidad de reservas por estado visualizando la respuesta en formato JSON:
 
 ```JSON
 {
@@ -137,65 +138,25 @@ Con el servidor corriendo http://localhost:8082/api/bookings/report/status
     "payload": [
         {
             "_id": "completado",
-            "total": 1
+            "total": 5
         },
         {
             "_id": "confirmado",
-            "total": 1
+            "total": 5
         },
         {
             "_id": "pending",
-            "total": 12
+            "total": 57
         }
     ]
 }
 ```
 
-## Estructura del proyecto
+## Eventos en tiempo real con Socket.IO y handlebars
 
-```bash
-src/
-  app.js                    
-  server.js                 
-  config/
-    env.config.js           # Carga y valida variables de entorno 
-  routes/
-    services.router.js      
-    bookings.router.js    
-    views.router.js  
-  controllers/
-    services.controller.js  # Solo HTTP: lee req, valida formato, llama al service, elige el status
-    bookings.controller.js  # Solo HTTP: mapea los resultados de dominio del service a 200/201/404/500
-  middlewares/
-    validate.middleware.js      # validateBody(schema): safeParse de Zod -> 400 con errors o next()
-  validations/
-    service.validation.js       # Schema de Zod para crear un servicio
-    booking.validation.js       # Schema de Zod para crear una reserva
-  services/
-    services.service.js     # Reglas de negocio de services (incl. filtro por categoría)
-    bookings.service.js     # Reglas de negocio de bookings: valida el servicio (compone services.service) y aplica la regla de quantity; devuelve resultados de dominio
-  dao/
-    booking.dao.js      
-    services.dao.js      
-  data/
-    services.json          
-    bookings.json          
-  repositories/
-    booking.repository.js   
-    services.repository.js 
-  utils
-    AppError.js 
-  views/
-    layouts/
-      main.handlebars
-    bookings.handlebars
-    services.handlebars
-    socket.handlebars
-  public/
-    socket.js 
-test/
-  booking.mongo.dao.test              # cliente de Socket.IO
-```
+Los handlebars bookings y services se suscriben a los eventos `BookingCreated` y `ServiceCreated` respectivamente, para actualizar la lista de reservas o servicios en tiempo real sin recargar la página.
+Las vistas public/js/booking.js y public/js/service.js para escuchar los eventos y actualizar el DOM.
+La vista public/js/message.js lista muestra los mensajes en tiempo real cuando se agrega un servicio o una reserva o un servicio a una reserva.
 
 ## Smoke tests
 
@@ -205,8 +166,63 @@ Para validar las operaciones contra MongoDB, se puede ejecutar el siguiente coma
 npm test
 ```
 
-## Eventos en tiempo real con Socket.IO y handlebars
+## Estructura del proyecto
 
-Los handlebars bookings y services se suscriben a los eventos `BookingCreated` y `ServiceCreated` respectivamente, para actualizar la lista de reservas o servicios en tiempo real sin recargar la página.
-Las vistas public/js/booking.js y public/js/service.js para escuchar los eventos y actualizar el DOM.
-La vista public/js/message.js lista muestra los mensajes en tiempo real cuando se agrega un servicio o una reserva o un servicio a una reserva.
+```bash
+EntregaFinal/
+│
+├──node_modules/
+│
+├──src/
+│   ├── config/
+│   │   ├── database.config.js
+│   │   └── env.config.js
+│   ├── controllers/
+│   │   ├── bookings.controller.js
+│   │   └── services.controller.js
+│   ├── dao/
+│   │   ├── models/
+│   │   │   ├── booking.model.js
+│   │   │   └── service.model.js
+│   │   └── mongo/
+│   │       ├── bookings.mongo.dao.js
+│   │       └── services.mongo.dao.js
+│   ├── middlewares/
+│   │   └── validate.middleware.js
+│   ├── public/
+│   │   ├── css/
+│   │   │   └── styles.css
+│   │   └── js/
+│   │       ├── booking.js
+│   │       ├── messages.js
+│   │       └── services.js
+│   ├── repositories/
+│   │   ├── bookings.repository.js
+│   │   └── services.repository.js
+│   ├── routes/
+│   │   ├── bookings.router.js
+│   │   ├── services.router.js
+│   │   └── views.router.js
+│   ├── services/
+│   │   ├── bookings.service.js
+│   │   └── services.service.js
+│   ├── utils/
+│   │   └── AppError.js
+│   ├── validations/
+│   │   ├── booking.validation.js
+│   │   └── service.validation.js
+│   ├── views/
+│   │   ├── layouts/
+│   │   ├── bookings.handlebars
+│   │   ├── messages.handlebars
+│   │   └── services.handlebars
+│   ├── app.js
+│   └── server.js
+├── test/
+│   └── booking.mongo.dao.test.js
+├── .env
+├── .env.example
+├── .gitignore
+├── package-lock.json
+└── package.json      
+```
