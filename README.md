@@ -5,7 +5,7 @@ La API está organizada en cada una con una única responsabilidad como se comen
 
 Hoy expone dos recursos
 `services` (servicios ofrecidos, con **CRUD completo**) y
-`bookings` (reservas, que se relacionan con servicios guardando **solo la referencia** al `id`)
+`bookings` (reservas, que se relacionan con servicios guardando solo la referencia al `id`)
 
 ## Requisitos
 
@@ -205,9 +205,8 @@ Para validar las operaciones contra MongoDB, se puede ejecutar el siguiente coma
 npm test
 ```
 
-## Eventos en tiempo real con Socket.IO
+## Eventos en tiempo real con Socket.IO y handlebars
 
-bookings.handlebars y services.handlebars se suscriben a los eventos `BookingCreated` y `ServiceCreated` respectivamente, para actualizar la lista de reservas o servicios en tiempo real sin recargar la página.
+Los handlebars bookings y services se suscriben a los eventos `BookingCreated` y `ServiceCreated` respectivamente, para actualizar la lista de reservas o servicios en tiempo real sin recargar la página.
 Las vistas public/js/booking.js y public/js/service.js para escuchar los eventos y actualizar el DOM.
-
-helpers/formatDate.js contiene un helper de Handlebars para formatear fechas en la vista
+La vista public/js/message.js lista muestra los mensajes en tiempo real cuando se agrega un servicio o una reserva o un servicio a una reserva.

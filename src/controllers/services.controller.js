@@ -87,17 +87,6 @@ export const createService = async (req, res) => {
       status: 'success',
       payload: newService
     });
-    // 201 Created: se creó un recurso nuevo.
-//    res.status(201).json({ status: 'success', payload: newService });
-          //  // Obtenemos la instancia de Socket.IO
-    // const io = req.app.get('io');
-
-    // // Avisamos a todos los clientes conectados
-    // io.emit('serviceCreated', newService);
-    // res.status(201).json({
-    //   status: 'success',
-    //   payload: newService
-    // });
   } catch (error) {
     res.status(500).json({ status: 'error', message: error.message });
   }

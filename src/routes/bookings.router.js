@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { validateBody } from '../middlewares/validate.middleware.js';
+import { bookingSchema } from '../validations/booking.validation.js';
 import {
   createBooking,
   getBookingById,
@@ -10,7 +12,7 @@ import {
 const router = Router();
 
 // POST /api/bookings              -> crear una reserva
-router.post('/', createBooking);
+router.post('/', validateBody(bookingSchema), createBooking);
 
 // GET /api/bookings/report/status -> cantidad de reservas por estado
 // Buena práctica: las rutas FIJAS van antes que las que tienen parámetros. 
