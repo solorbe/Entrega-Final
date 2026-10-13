@@ -1,4 +1,4 @@
-# PreEntrega8-ConsultasAvanzadasPopulate
+# Entrega Final
 
 Es una **API REST modular** de un Sistema de Turnos y Reservas, construida con **Express**.
 La API está organizada en cada una con una única responsabilidad como se comenta en la sección "Flujo de una petición" más abajo.
@@ -24,25 +24,25 @@ npm run dev
 
 ## Dependencias del proyecto
 
-- **`express`**: framework que provee el servidor HTTP, el router y los middlewares (`express.json()`, logger propio, etc.) usados para armar la API.
-- **`dotenv`**: lee el archivo `.env` de la raíz del proyecto y carga cada variable definida ahí dentro de `process.env`, el objeto donde Node guarda las variables de entorno del proceso. Todo lo que dotenv carga llega como **string**, aunque en el `.env` parezca un número.
-- **`mongoose`**: ODM (Object-Document Mapper) para MongoDB. Permite definir "models" con un schema fijo y después usar esos models para leer/escribir en MongoDB con una API basada en promesas, en vez de escribir queries con el driver nativo a mano.
-- **`fs`** (más precisamente `fs/promises`) es un módulo **nativo** de Node.js: no aparece en `package.json` ni requiere instalación, ya viene incluido en el runtime.
-- **`handlebars`**: motor de plantillas para renderizar HTML dinámico. Se usa en la carpeta `views/` y se integra con Express a través de `app.engine('handlebars', ...)` en `src/app.js`.
-- **`socket.io`**: permite comunicación bidireccional en tiempo real entre el servidor y los clientes web. Se integra con Express a través de `io.attach(server)` en `src/server.js`.
-- **`mongoose-paginate-v2`**: plugin de Mongoose que agrega un método `Model.paginate()` para paginar resultados de consultas a MongoDB.
+**`express`**: framework que provee el servidor HTTP, el router y los middlewares (`express.json()`, logger propio, etc.) usados para armar la API.
+**`dotenv`**: lee el archivo `.env` de la raíz del proyecto y carga cada variable definida ahí dentro de `process.env`, el objeto donde Node guarda las variables de entorno del proceso. Todo lo que dotenv carga llega como **string**, aunque en el `.env` parezca un número.
+**`mongoose`**: ODM (Object-Document Mapper) para MongoDB. Permite definir "models" con un schema fijo y después usar esos models para leer/escribir en MongoDB con una API basada en promesas, en vez de escribir queries con el driver nativo a mano.
+**`fs`** (más precisamente `fs/promises`) es un módulo **nativo** de Node.js: no aparece en `package.json` ni requiere instalación, ya viene incluido en el runtime.
+**`handlebars`**: motor de plantillas para renderizar HTML dinámico. Se usa en la carpeta `views/` y se integra con Express a través de `app.engine('handlebars', ...)` en `src/app.js`.
+**`socket.io`**: permite comunicación bidireccional en tiempo real entre el servidor y los clientes web. Se integra con Express a través de `io.attach(server)` en `src/server.js`.
+**`mongoose-paginate-v2`**: plugin de Mongoose que agrega un método `Model.paginate()` para paginar resultados de consultas a MongoDB.
 
 ## Flujo de una petición
 
-```
-Cliente -> Ruta -> Controller -> Service -> Repository -> DAO -> MongoDB
+```bash
+Cliente -> Routers -> Controllers -> Services -> Repositories -> DAO -> MongoDB
 ```
 
-- **Router**: reconoce el método + path y llama a la función del controller.
-- **Controller**: lee `req.params` / `req.query` / `req.body`, valida el *formato* del request (si faltan campos obligatorios → `400`), llama al **service** y traduce lo que devuelve a status + cuerpo. Va todo en `try/catch` → ante un error inesperado responde `500`. **No** toca el FileSystem ni aplica reglas de negocio.
-- **Service**: aplica las reglas de negocio (por ejemplo: "no se puede agregar a una reserva un servicio que no existe", la regla de `quantity`, el filtro por categoría). No conoce `req` ni `res`: recibe y devuelve datos de dominio (un objeto, `null`, o un error de dominio como `{ error: 'SERVICE_NOT_FOUND' }`)
-- **repository** puente hacia el DAO (recibe el DAO por constructor, con un valor por defecto). No aplica reglas de negocio, solo delega.
-- **dao** | Persistencia en mongoDB. Implementa los métodos CRUD y de búsqueda, usando el model de Mongoose correspondiente.
+**Router**: reconoce el método + path y llama a la función del controller.
+**Controller**: lee `req.params` / `req.query` / `req.body`, valida el *formato* del request (si faltan campos obligatorios → `400`), llama al **service** y traduce lo que devuelve a status + cuerpo. Va todo en `try/catch` → ante un error inesperado responde `500`. **No** toca el FileSystem ni aplica reglas de negocio.
+**Service**: aplica las reglas de negocio (por ejemplo: "no se puede agregar a una reserva un servicio que no existe", la regla de `quantity`, el filtro por categoría). No conoce `req` ni `res`: recibe y devuelve datos de dominio (un objeto, `null`, o un error de dominio como `{ error: 'SERVICE_NOT_FOUND' }`)
+**repository** puente hacia el DAO (recibe el DAO por constructor, con un valor por defecto). No aplica reglas de negocio, solo delega.
+**dao** | Persistencia en mongoDB. Implementa los métodos CRUD y de búsqueda, usando el model de Mongoose correspondiente.
 
 ## Cómo probar con Postman
 
@@ -71,6 +71,22 @@ Ahora los datos viven en **MongoDB Atlas** en dos colecciones: `services` y `boo
 Se pueden very editar a mano desde la pestaña **Collections** del cluster en Atlas.
 
 Los archivos `src/dao/mongo/services.mongo.dao.js` y `src/dao/mongo/booking.mongo.dao.js` usan los **models** de Mongoose (`ServiceModel` y `BookingModel`) para leer y escribir en esas colecciones.
+
+## Validación con Zod
+
+`POST /api/services` y `POST /api/bookings` pasan primero por el middleware `validateBody(schema)`.
+Si el body no cumple el schema de Zod, se responde `400` **sin llegar al controller ni a la base**:
+
+```json
+{
+  "status": "error",
+  "message": "Datos inválidos",
+  "errors": ["price: Invalid input: expected number, received string"]
+}
+```
+
+Zod **no convierte tipos**: `"price": "8000"` (string) es inválido;
+tiene que ser `8000` (número). Los services quedan solo con las reglas de negocio (por ejemplo, precio no negativo).
 
 ## Consultas avanzadas, validación y populate
 
@@ -101,23 +117,7 @@ Ahora `payload` es el array **de la página pedida**, y alrededor viene la metad
  }
 ```
 
-Las vistas (`/services`) y los sockets (`/realtime-services`) **no cambian**: siguen usando `getServices()`, con la lista completa.
-
-## Validación con Zod
-
-`POST /api/services` y `POST /api/bookings` pasan primero por el middleware `validateBody(schema)`.
-Si el body no cumple el schema de Zod, se responde `400` **sin llegar al controller ni a la base**:
-
-```json
-{
-  "status": "error",
-  "message": "Datos inválidos",
-  "errors": ["price: Invalid input: expected number, received string"]
-}
-```
-
-Zod **no convierte tipos**: `"price": "8000"` (string) es inválido;
-tiene que ser `8000` (número). Los services quedan solo con las reglas de negocio (por ejemplo, precio no negativo).
+Las vistas (`/services`)**no cambian**: siguen usando `getServices()`, con la lista completa.
 
 ## Reporte de reservas con datos completos de servicios usando populate
 
@@ -165,6 +165,24 @@ Para validar las operaciones contra MongoDB, se puede ejecutar el siguiente coma
 ```bash
 npm test
 ```
+
+Salida de ejemplo:
+
+Pruebas de BookingMongoDao
+  ✔ create: debe guardar una nueva reserva y devolver su _id (292.7815ms)
+  ✔ getById: debe retornar la reserva correspondiente al ID (47.9137ms)
+  ✔ getAll: debe devolver una lista con las reservas (51.7557ms)
+  ✔ update: debe modificar una propiedad de la reserva (91.8668ms)
+  ✔ countByStatus: debe ejecutar la consulta de conteo por estado (42.0335ms)
+✔ Pruebas de BookingMongoDao (1179.2943ms)
+ℹ tests 5
+ℹ suites 1
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1921.4693
 
 ## Estructura del proyecto
 

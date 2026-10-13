@@ -13,7 +13,7 @@ describe("Pruebas de BookingMongoDao", () => {
   let bookingId = null;
 
   before(async () => {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(process.env.MONGO_URI);
   });
 
   after(async () => {
