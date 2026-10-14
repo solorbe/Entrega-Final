@@ -18,7 +18,7 @@ Hoy expone dos recursos
 ```bash
 git clone
 npm install express dotenv mongoose handlebars socket.io zod mongoose-paginate-v2
-completar .env.example .env   # completar PORT=8080 y MONGO_URI
+completar .env.example .env  
 npm run dev
 ```
 
