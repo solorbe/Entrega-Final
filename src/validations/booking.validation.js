@@ -10,10 +10,9 @@ export const bookingSchema = z.object({
   clientEmail: z.string().min(2,'El email no es válido'),
   // La fecha llega como string en el JSON (por ejemplo "2026-09-01");
   // Mongoose la convierte a Date al guardar.
-  date: z.string().optional(),
-  time: z.string().optional(),
-  // Los servicios se agregan después con
-  // POST /api/bookings/:bid/services/:sid, por eso es opcional.
+  date: z.iso.date().optional(),
+  time: z.iso.time().optional(),
+  // Los servicios se agregan después con POST /api/bookings/:bid/services/:sid, por eso es opcional.
 
   services: z.array(z.any()).optional(),
 });

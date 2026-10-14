@@ -35,6 +35,7 @@ app.engine('handlebars', engine(
       const fecha = new Date(date);
       if (isNaN(fecha.getTime())) return 'Fecha inválida';
       return fecha.toLocaleDateString('es-AR', {
+        timeZone: 'UTC',
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'

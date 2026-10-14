@@ -24,8 +24,14 @@ const bookingsContainer = document.getElementById('bookings-container');
 function formatDate(date) {
   if (!date) return '';
 
-  return new Date(date).toLocaleDateString('es-AR');
+  return new Date(date).toLocaleDateString('es-AR', {
+    timeZone: 'UTC',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
 }
+
 socket.on('bookingCreated', (booking) => {
   if (!bookingsContainer) return;
   // Generamos los servicios
