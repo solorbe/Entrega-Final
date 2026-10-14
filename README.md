@@ -25,10 +25,15 @@ npm run dev
 ## Dependencias del proyecto
 
 **`express`**: framework que provee el servidor HTTP, el router y los middlewares (`express.json()`, logger propio, etc.) usados para armar la API.
+
 **`dotenv`**: lee el archivo `.env` de la raíz del proyecto y carga cada variable definida ahí dentro de `process.env`, el objeto donde Node guarda las variables de entorno del proceso. Todo lo que dotenv carga llega como **string**, aunque en el `.env` parezca un número.
+
 **`mongoose`**: ODM (Object-Document Mapper) para MongoDB. Permite definir "models" con un schema fijo y después usar esos models para leer/escribir en MongoDB con una API basada en promesas, en vez de escribir queries con el driver nativo a mano.
+
 **`fs`** (más precisamente `fs/promises`) es un módulo **nativo** de Node.js: no aparece en `package.json` ni requiere instalación, ya viene incluido en el runtime.
+
 **`handlebars`**: motor de plantillas para renderizar HTML dinámico. Se usa en la carpeta `views/` y se integra con Express a través de `app.engine('handlebars', ...)` en `src/app.js`.
+
 **`socket.io`**: permite comunicación bidireccional en tiempo real entre el servidor y los clientes web. Se integra con Express a través de `io.attach(server)` en `src/server.js`.
 **`mongoose-paginate-v2`**: plugin de Mongoose que agrega un método `Model.paginate()` para paginar resultados de consultas a MongoDB.
 
@@ -38,11 +43,15 @@ npm run dev
 Cliente -> Routers -> Controllers -> Services -> Repositories -> DAO -> MongoDB
 ```
 
-**Router**: reconoce el método + path y llama a la función del controller.
-**Controller**: lee `req.params` / `req.query` / `req.body`, valida el *formato* del request (si faltan campos obligatorios → `400`), llama al **service** y traduce lo que devuelve a status + cuerpo. Va todo en `try/catch` → ante un error inesperado responde `500`. **No** toca el FileSystem ni aplica reglas de negocio.
-**Service**: aplica las reglas de negocio (por ejemplo: "no se puede agregar a una reserva un servicio que no existe", la regla de `quantity`, el filtro por categoría). No conoce `req` ni `res`: recibe y devuelve datos de dominio (un objeto, `null`, o un error de dominio como `{ error: 'SERVICE_NOT_FOUND' }`)
-**repository** puente hacia el DAO (recibe el DAO por constructor, con un valor por defecto). No aplica reglas de negocio, solo delega.
-**dao** | Persistencia en mongoDB. Implementa los métodos CRUD y de búsqueda, usando el model de Mongoose correspondiente.
+**Routers**: reconoce el método + path y llama a la función del controller.
+
+**Controllers**: lee `req.params` / `req.query` / `req.body`, valida el *formato* del request (si faltan campos obligatorios → `400`), llama al **service** y traduce lo que devuelve a status + cuerpo. Va todo en `try/catch` → ante un error inesperado responde `500`.
+
+**Services**: aplica las reglas de negocio (por ejemplo: "no se puede agregar a una reserva un servicio que no existe", la regla de `quantity`, el filtro por categoría). No conoce `req` ni `res`: recibe y devuelve datos de dominio (un objeto, `null`, o un error de dominio como `{ error: 'SERVICE_NOT_FOUND' }`)
+
+**Repositories** puente hacia el DAO (recibe el DAO por constructor, con un valor por defecto). No aplica reglas de negocio, solo delega.
+
+**DAO** | Persistencia en mongoDB. Implementa los métodos CRUD y de búsqueda, usando el model de Mongoose correspondiente.
 
 ## Cómo probar con Postman
 
